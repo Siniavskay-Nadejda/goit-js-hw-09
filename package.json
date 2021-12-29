@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "caniuse-lite": "^1.0.30001291",
+    "dist": "^0.1.2",
     "flatpickr": "^4.6.9",
     "notiflix": "^3.2.2"
   }

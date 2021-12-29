@@ -1,47 +1,47 @@
 
 import Notiflix from "notiflix";
 
-const refs = {
-  formEl: document.querySelector(".form")
- }
-refs.formEl.addEventListener("submit", formSubmitPromis);
+const formEl = document.querySelector(".form")
+  
+let formInputValue = {}
 
-let position = 0
+ formEl.addEventListener("input", formInput);
+ formEl.addEventListener("submit", formSubmitPromis);
+ 
+ function formInput(e) {
+  formInputValue[e.target.name]=e.target.value
+}
 function formSubmitPromis(e) {
   e.preventDefault();
-  let delay = Number(e.currentTarget.elements.delay.value);
-  const step = Number(e.currentTarget.elements.step.value);
-  const amount = Number(e.currentTarget.elements.amount.value);
-
-  setInterval(() => {
-    if (position == amount) {
-      return
-    }
-    position += 1;
-    setTimeout(() => {
-     delay+= step
-    })
-    createPromise( position, delay)
-  .then(({ position, delay }) => {
-    Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
-  })
-  .catch(({ position, delay }) => {
-    Notiflix.Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
-  });
-  },delay)
+  const amount = Number(formInputValue.amount);
+  const delay1 = Number(formInputValue.delay);
+  const step = Number(formInputValue.step)
+  for (let i = 0; i < amount; i += 1) {
+    const position = i + 1
+    const delay = delay1 + step * i
+    createPromise(position, delay)
+      .then(() => {
+        Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
+      })
+      .catch(() => {
+        Notiflix.Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
+      });
+  }
 }
-
 function createPromise(position, delay) {
-  const promise = new Promise(( fulfilled, reject) => {
-    setInterval(() => {
-      const shouldResolve = Math.random() > 0.3;
-      if (shouldResolve) {
-         fulfilled({ position, delay });
-      }
-      reject({ position, delay });
-    }, delay)
-  
-  })
-  return promise;
+  return new Promise((resolve, reject) => {
+   const shouldResolve = Math.random() > 0.3;
+    setTimeout(() => {
+       if (shouldResolve) {
+    resolve("success");
+      } else {
+        reject("error");
+  }
+    }, delay);
+  });
 }
+
+
+
+
 
